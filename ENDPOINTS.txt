@@ -1,0 +1,87 @@
+================================================================================
+  API INDECSA - ENDPOINTS
+  Base URL: https://springbootindecsa-production.up.railway.app
+================================================================================
+
+NOTAS GENERALES
+--------------------------------------------------------------------------------
+- No hay Spring Security en el proyecto: NINGUN endpoint requiere token.
+  El /login solo valida credenciales y devuelve los datos del empleado.
+- Todas las fechas usan formato ISO: YYYY-MM-DD
+- Los CRUD estandar responden:
+    GET  /api/<recurso>        -> lista
+    GET  /api/<recurso>/{id}   -> uno
+    POST /api/<recurso>        -> crea (HTTP 201)
+    PUT  /api/<recurso>/{id}   -> actualiza
+    DELETE /api/<recurso>/{id} -> elimina (HTTP 204)
+
+
+================================================================================
+  AUTH
+================================================================================
+POST   /api/auth/login
+       Body JSON: { "correoEmpleado": "...", "contrasena": "..." }
+
+
+================================================================================
+  HOME / HEALTH
+================================================================================
+GET    /                       Status del servicio { service, status, docs }
+
+
+================================================================================
+  CRUDs ESTANDAR  (GET, GET/{id}, POST, PUT/{id}, DELETE/{id})
+================================================================================
+/api/roles                     Roles
+/api/estados                   Estados
+/api/domicilios                Domicilios
+/api/empleados                 Empleados
+/api/trabajadores              Trabajadores
+/api/contratistas              Contratistas
+/api/proyectos                 Proyectos
+/api/registros-migratorios     Registros migratorios
+/api/estandares-rendimiento    Estandares de rendimiento
+
+
+================================================================================
+  CRUDs CON FILTROS OPCIONALES (query params en el GET lista)
+================================================================================
+/api/cuadrillas                              ?idProyecto=
+/api/avances-partida                         ?idProyecto=
+/api/registros-horas                         ?idAsignacionTp=
+/api/asignaciones-trabajador-proyecto        ?idProyecto=   ?idTrabajador=
+/api/asignaciones-proyecto-contratista       ?idProyecto=   ?idContratista=
+
+
+================================================================================
+  RENDIMIENTO (solo lectura)
+================================================================================
+GET    /api/rendimiento/trabajador/{idTrabajador}?fechaInicio=YYYY-MM-DD&fechaFin=YYYY-MM-DD
+GET    /api/rendimiento/proyecto/{idProyecto}?fechaInicio=YYYY-MM-DD&fechaFin=YYYY-MM-DD
+
+
+================================================================================
+  REPORTES PDF  (devuelven application/pdf como descarga)
+================================================================================
+GET    /api/reportes/rendimiento/trabajador/{id}?fechaInicio=YYYY-MM-DD&fechaFin=YYYY-MM-DD
+GET    /api/reportes/horas/proyecto/{id}?fechaInicio=YYYY-MM-DD&fechaFin=YYYY-MM-DD
+GET    /api/reportes/avance/proyecto/{id}?fechaInicio=YYYY-MM-DD&fechaFin=YYYY-MM-DD
+
+
+================================================================================
+  EJEMPLOS (cURL)
+================================================================================
+# Login
+curl -X POST https://springbootindecsa-production.up.railway.app/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"correoEmpleado":"correo@ejemplo.com","contrasena":"tuPassword"}'
+
+# Listar proyectos
+curl https://springbootindecsa-production.up.railway.app/api/proyectos
+
+# Rendimiento de un trabajador en un rango
+curl "https://springbootindecsa-production.up.railway.app/api/rendimiento/trabajador/1?fechaInicio=2026-01-01&fechaFin=2026-06-01"
+
+# Descargar reporte PDF de avance de obra
+curl -o avance.pdf "https://springbootindecsa-production.up.railway.app/api/reportes/avance/proyecto/1?fechaInicio=2026-01-01&fechaFin=2026-06-01"
+================================================================================
