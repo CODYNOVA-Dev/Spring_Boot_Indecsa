@@ -34,4 +34,11 @@ public class ProyectoController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/estatus")
+    public Proyecto cambiarEstatus(@PathVariable Integer id, @RequestParam Proyecto.EstatusProyecto estatus) {
+        Proyecto p = service.findById(id);
+        p.setEstatusProyecto(estatus);
+        return service.update(id, p);
+    }
 }

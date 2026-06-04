@@ -34,4 +34,11 @@ public class TrabajadorController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/estado")
+    public Trabajador cambiarEstado(@PathVariable Integer id, @RequestParam Trabajador.EstadoTrabajador estado) {
+        Trabajador t = service.findById(id);
+        t.setEstadoTrabajador(estado);
+        return service.update(id, t);
+    }
 }
